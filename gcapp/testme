@@ -1,0 +1,22 @@
+iterations=30
+waittime=12
+
+echo "Starting GC Test"
+echo "Will run ${iterations} times with ${waittime}s delay between each"
+
+stdt=$(date '+%d/%m/%Y %H:%M:%S');
+for i in $( eval echo {1..$iterations} )
+do
+ echo "nIteration $i of $iterations"
+ echo "Generating 500MB load..."
+ curl -X POST "http://localhost:8080/api/memory/load/500"
+ sleep $waittime
+ echo "Generating 800MB single load..."
+ curl -X POST "http://localhost:8080/api/memory/load/800"
+ sleep $waittime
+done
+
+eddt=$(date '+%d/%m/%Y %H:%M:%S');
+
+echo "Test Complete"
+echo "Start: $stdt, End: $eddt"

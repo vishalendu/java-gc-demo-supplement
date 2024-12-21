@@ -1,0 +1,32 @@
+echo "Select an option:"
+echo "1. Run G1GC"
+echo "2. Run ZGC+Generation"
+echo "3. Run ShenandoahGC"
+
+read choice
+
+## openjdk
+#export JAVA_HOME=/home/home/JAVA/jdk-23.0.1
+## amazon corretto
+export JAVA_HOME=/home/home/JAVA/amazon-corretto-23.0.1.8.1-linux-x64
+
+export PATH=$JAVA_HOME/bin:$PATH
+export JAVA_ARGS="-XX:ActiveProcessorCount=2"
+
+case $choice in
+    1)
+        echo "Running with G1GC"
+        java -Xms2g -Xmx2g $JAVA_ARGS -XX:+UseG1GC -jar gcdemo-0.0.1-SNAPSHOT.jar
+        ;;
+    2)
+        echo "Running with ZGC+Generation"
+        java -Xms2g -Xmx2g $JAVA_ARGS -XX:+UseZGC -jar gcdemo-0.0.1-SNAPSHOT.jar
+        ;;
+    3)
+        echo "Running with ShenandoahGC"
+        java -Xms2g -Xmx2g $JAVA_ARGS -XX:+UseShenandoahGC -jar gcdemo-0.0.1-SNAPSHOT.jar 
+        ;;
+    *)
+        echo "Invalid choice."
+        ;;
+esac
