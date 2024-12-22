@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Java GC Metrics Comparison</title>
+    <!-- Load the Google Charts library -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    <script type="text/javascript">
+      // Load the 'corechart' and 'bar' packages.
+      google.charts.load('current', { packages: ['corechart', 'bar'] });
+      
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawAllCharts);
+
+      function drawAllCharts() {
+        drawCPUChart();
+        drawPauseChart();
+        drawGCOverheadChart();
+        drawConcurrentTimeChart();
+        drawSummaryChart();
+      }
+
+      // ----------------------
+      // 1) CPU Usage (P95) Chart
+      // ----------------------
+      function drawCPUChart() {
+        // Replace sample data with actual values from the screenshot
+        var data = google.visualization.arrayToDataTable([
+          ['Collector', 'Test1 (P95 CPU)', 'Test2 (P95 CPU)'],
+          ['ZGC+G',  15, 17],
+          ['Shenandoah',  18, 20],
+          ['G1GC',    23, 25]
+        ]);
+
+        var options = {
+          title: 'Process CPU Usage (95th Percentile)',
+          hAxis: {
+            title: 'Collector'
+          },
+          vAxis: {
+            title: 'CPU (%)'
+          },
+          legend: { position: 'top' },
+          colors: ['#2ecc71', '#3498db'] // Just an example of color styling
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('cpu_chart'));
+        chart.draw(data, options);
+      }
+
+      // ----------------------
+      // 2) Pause Times Chart
+      // ----------------------
+      function drawPauseChart() {
+        // Replace sample data with actual values
+        var data = google.visualization.arrayToDataTable([
+          ['Collector', 'Avg Pause (ms)', 'Max Pause (ms)'],
+          ['ZGC+G', 0.5, 1.2],
+          ['Shenandoah', 1.0, 2.4],
+          ['G1GC',  3.2, 5.1]
+        ]);
+
+        var options = {
+          title: 'GC Pause Times',
+          hAxis: {
+            title: 'Collector'
+          },
+          vAxis: {
+            title: 'Time (ms)'
+          },
+          legend: { position: 'top' },
+          colors: ['#16a085', '#8e44ad']
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('pause_chart'));
+        chart.draw(data, options);
+      }
+
+      // ----------------------
+      // 3) GC Overhead Chart
+      // ----------------------
+      function drawGCOverheadChart() {
+        // Replace sample data with actual values
+        var data = google.visualization.arrayToDataTable([
+          ['Collector', 'Avg GC Overhead (%)', 'Max GC Overhead (%)'],
+          ['ZGC+G', 2, 4],
+          ['Shenandoah', 3, 6],
+          ['G1GC', 5, 9]
+        ]);
+
+        var options = {
+          title: 'GC Overhead',
+          hAxis: {
+            title: 'Collector'
+          },
+          vAxis: {
+            title: 'Overhead (%)'
+          },
+          legend: { position: 'top' },
+          colors: ['#2980b9', '#c0392b']
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('gc_overhead_chart'));
+        chart.draw(data, options);
+      }
+
+      // ----------------------
+      // 4) Concurrent Time Chart
+      // ----------------------
+      function drawConcurrentTimeChart() {
+        // Replace sample data with actual values
+        var data = google.visualization.arrayToDataTable([
+          ['Collector', 'Avg Concurrent Time (ms)', 'Max Concurrent Time (ms)'],
+          ['ZGC+G', 100, 150],
+          ['Shenandoah', 120, 180],
+          ['G1GC', 80, 130]
+        ]);
+
+        var options = {
+          title: 'GC Concurrent Time',
+          hAxis: {
+            title: 'Collector'
+          },
+          vAxis: {
+            title: 'Time (ms)'
+          },
+          legend: { position: 'top' },
+          colors: ['#f39c12', '#d35400']
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('concurrent_chart'));
+        chart.draw(data, options);
+      }
+
+      // ----------------------
+      // 5) Summary Chart (Radar or Combined Bar)
+      // ----------------------
+      // For simplicity, we'll create a "Performance Score" bar chart
+      // where a lower score is "better" (based on an arbitrary weighting).
+      function drawSummaryChart() {
+        // In a real scenario, you might combine multiple metrics
+        // (like CPU usage, pause times, overhead) to produce a single
+        // "performance score." This is just an example.
+
+        var data = google.visualization.arrayToDataTable([
+          ['Collector', 'Composite Performance Score (Lower is Better)'],
+          // Example scoring: CPU + (Pause*someFactor) + Overhead*someFactor, etc.
+          ['ZGC+G',  25],
+          ['Shenandoah', 35],
+          ['G1GC',  50]
+        ]);
+
+        var options = {
+          title: 'Summary Performance Score',
+          hAxis: {
+            title: 'Composite Score'
+          },
+          legend: { position: 'none' },
+          colors: ['#9b59b6']
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('summary_chart'));
+        chart.draw(data, options);
+      }
+    </script>
+
+    <!-- Basic styling for layout -->
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .chart-container {
+        width: 100%;
+        max-width: 900px;
+        margin-bottom: 50px;
+      }
+      h2 {
+        margin-top: 70px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Java GC Metrics Comparison</h1>
+    <p>This page shows interactive charts comparing ZGC+G, Shenandoah, and G1GC based on various metrics observed during load tests.</p>
+
+    <!-- Container for charts -->
+    <div class="chart-container" id="cpu_chart"></div>
+    <div class="chart-container" id="pause_chart"></div>
+    <div class="chart-container" id="gc_overhead_chart"></div>
+    <div class="chart-container" id="concurrent_chart"></div>
+    <div class="chart-container" id="summary_chart"></div>
+
+  </body>
+</html>
